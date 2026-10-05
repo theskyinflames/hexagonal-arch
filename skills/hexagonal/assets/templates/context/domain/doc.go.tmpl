@@ -1,0 +1,8 @@
+// Package domain is the center of the __CONTEXT__ hexagon: entities, value
+// objects, business rules, domain errors and the driven ports the domain
+// needs (e.g. repositories), written in the domain's own language.
+//
+// It imports only the standard library (and internal/platform/{ddd,events}
+// when the CQRS platform is used). Never app, infra, another context's infra,
+// database/sql, net/http or transport tags.
+package domain

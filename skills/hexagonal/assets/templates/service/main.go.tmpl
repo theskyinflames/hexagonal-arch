@@ -1,0 +1,65 @@
+package main
+
+import (
+	"context"
+	"errors"
+	"log/slog"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+)
+
+func main() {
+	if err := run(); err != nil {
+		slog.Error("__SERVICE__ stopped", "error", err)
+		os.Exit(1)
+	}
+}
+
+// config is read here and nowhere else; adapters receive plain values.
+type config struct {
+	addr string
+}
+
+func loadConfig() (config, error) {
+	c := config{addr: os.Getenv("ADDR")}
+	if c.addr == "" {
+		c.addr = ":8080"
+	}
+	return c, nil
+}
+
+// run is the composition root: the only place that knows the concrete
+// adapters. Build driven adapters, inject them into use cases, then hand the
+// use cases to the driving adapters.
+func run() error {
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+	cfg, err := loadConfig()
+	if err != nil {
+		return err
+	}
+
+	// Driven adapters, use cases and driving adapters are wired here.
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+	})
+	srv := &http.Server{Addr: cfg.addr, Handler: mux, ReadHeaderTimeout: 5 * time.Second}
+
+	go func() {
+		<-ctx.Done()
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		_ = srv.Shutdown(shutdownCtx)
+	}()
+	log.Info("listening", "addr", cfg.addr)
+	if err := srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
+		return err
+	}
+	return nil
+}

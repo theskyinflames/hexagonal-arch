@@ -1,0 +1,7 @@
+// Package app holds the __CONTEXT__ use cases: the driving ports of the
+// hexagon (commands and queries when the CQRS platform is used), plus the
+// driven ports only use cases need (read models, external systems).
+//
+// It imports domain, never infra. Inputs and outputs are plain data, never
+// HTTP requests, protobuf messages or SQL rows.
+package app

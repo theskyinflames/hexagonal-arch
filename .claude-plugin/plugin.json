@@ -1,0 +1,12 @@
+{
+  "name": "hexagonal",
+  "version": "0.1.0",
+  "description": "Hexagonal architecture (ports and adapters) for Go services: layout, ports, adapters, composition root and boundary tests, with scaffolding. Pairs with cqrs-eda.",
+  "author": {
+    "name": "theskyinflames",
+    "email": "jaumearus@gmail.com"
+  },
+  "repository": "https://github.com/theskyinflames/hexagonal-arch",
+  "license": "MIT",
+  "keywords": ["go", "golang", "hexagonal", "ports-and-adapters", "clean-architecture", "ddd"]
+}
