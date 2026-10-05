@@ -1,0 +1,12 @@
+# Go
+*.test
+*.out
+coverage.*
+
+# Skill eval workspaces
+*-workspace/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store

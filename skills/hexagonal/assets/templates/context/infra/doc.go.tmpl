@@ -1,0 +1,7 @@
+// Package infra groups the __CONTEXT__ adapters, one subpackage per
+// technology (infra/httpapi, infra/postgres, infra/memory, ...).
+//
+// Driving adapters decode input, call a use case and map domain errors to
+// protocol codes. Driven adapters implement ports from domain or app and
+// translate driver errors into domain errors. Only cmd/ wires them.
+package infra
